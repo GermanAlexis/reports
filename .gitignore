@@ -5,9 +5,8 @@
 
 
 #Postgres
-/postgres_database
-/pgadmin_database
-
+postgres/
+pgadmin/
 
 # Logs
 logs

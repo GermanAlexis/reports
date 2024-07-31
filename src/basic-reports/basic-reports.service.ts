@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import { PrinterService } from '../printer-pdf/printer.service';
 import { TDocumentInformation } from 'pdfmake/interfaces';
 import { helloReports } from 'src/reports/hello-report';
+import { employeesReference } from 'src/reports';
 
 @Injectable()
 export class BasicReportsService extends PrismaClient implements OnModuleInit {
@@ -18,17 +19,14 @@ export class BasicReportsService extends PrismaClient implements OnModuleInit {
 
   constructor(private readonly printerService: PrinterService) { super(); }
 
-  create(): PDFKit.PDFDocument {
-
+  basicReports(): PDFKit.PDFDocument {
     const pdfDoc = helloReports()
-
-
     return this.printerService.createPdf(pdfDoc)
-
   }
 
-  findAll() {
-    return `This action returns all basicReports`;
+  employeesReference() {
+    const pdfDoc = employeesReference()
+    return this.printerService.createPdf(pdfDoc);
   }
 
   findOne(id: number) {

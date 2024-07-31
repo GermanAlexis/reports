@@ -1,15 +1,16 @@
-import type { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
+import type { Content, StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
+import { DateFormatter } from "src/helpers/date-formatter"
 
 const styles: StyleDictionary = {
   header: {
     bold: true,
     alignment: 'center',
     fontSize: 22,
-    margin: [0, 0, 0, 20]
+    margin: [0, 90, 0, 50]
   },
   body: {
     alignment: 'justify',
-    margin: [0, 0, 0, 70]
+    margin: [0, 50, 0, 70]
   },
   signature: {
     fontSize: 14,
@@ -18,11 +19,27 @@ const styles: StyleDictionary = {
   }
 }
 
-
-
+const logo: Content = {
+  image: 'src/assests/tucan-code-logo.png',
+  width: 100,
+  height: 100,
+}
 export const employeesReference = () => {
   const pdfDoc: TDocumentDefinitions = {
     styles,
+    pageMargins: [20, 40, 20, 30],
+    header: [
+      {
+        margin: [20, 20],
+        columns: [
+          logo,
+          {
+            text: `${DateFormatter.getDDMMYYY(new Date)}`,
+            alignment: 'right'
+          }
+        ]
+      }
+    ],
     content: [
       { text: 'Employees Reference', style: 'header' },
       {

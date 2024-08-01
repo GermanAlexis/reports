@@ -1,5 +1,6 @@
-import type { Content, StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
-import { DateFormatter } from "src/helpers/date-formatter"
+import type { StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces"
+import { HeaderSection } from "./sections/header.section"
+import { createDiffieHellmanGroup } from "crypto"
 
 const styles: StyleDictionary = {
   header: {
@@ -19,37 +20,35 @@ const styles: StyleDictionary = {
   }
 }
 
-const logo: Content = {
-  image: 'src/assests/tucan-code-logo.png',
-  width: 100,
-  height: 100,
+
+interface EmployeeValues {
+  employeerName: string,
+  employeerPotition: string,
+  employeeName: string,
+  employeeStartWork: string,
+  employeePosition: string,
+  employeeSchedule: string,
+  company: string,
+  employeeHourPerDay: number,
 }
-export const employeesReference = () => {
+
+export const employeesReference = (options: EmployeeValues) => {
+
+  const { employeerName, employeerPotition, employeeName, employeePosition, employeeSchedule, employeeStartWork, company, employeeHourPerDay } = options
   const pdfDoc: TDocumentDefinitions = {
     styles,
     pageMargins: [20, 40, 20, 30],
-    header: [
-      {
-        margin: [20, 20],
-        columns: [
-          logo,
-          {
-            text: `${DateFormatter.getDDMMYYY(new Date)}`,
-            alignment: 'right'
-          }
-        ]
-      }
-    ],
+    header: HeaderSection({}),
     content: [
-      { text: 'Employees Reference', style: 'header' },
+      { text: 'Employeement Reference', style: 'header' },
       {
-        text: `Yo, [Nombre del Empleador], en mi calidad de [Cargo del Empleador] de [Nombre de la Empresa], por medio de la presente certifico que [Nombre del Empleado] ha sido empleado en nuestra empresa desde el [Fecha de Inicio del Empleado]. \n\n
-Durante su empleo, el Sr./Sra. [Nombre del Empleado] ha desempeñado el cargo de [Cargo del Empleado], demostrando responsabilidad, compromiso y habilidades profesionales en sus labores. \n\n
-La jornada laboral del Sr./ Sra. [Nombre del Empleado] es de [Número de Horas] horas semanales, con un horario de [Horario de Trabajo], cumpliendo con las políticas y procedimientos establecidos por la empresa. \n\n
+        text: `Yo, ${employeerName}, en mi calidad de ${employeerPotition} de ${company}, por medio de la presente certifico que ${employeeName} ha sido empleado en nuestra empresa desde el ${employeeStartWork}. \n\n
+Durante su empleo, el Sr./Sra. ${employeeName} ha desempeñado el cargo de ${employeePosition}, demostrando responsabilidad, compromiso y habilidades profesionales en sus labores. \n\n
+La jornada laboral del Sr./ Sra. ${employeeName} es de ${employeeHourPerDay} horas semanales, con un horario de ${employeeSchedule}, cumpliendo con las políticas y procedimientos establecidos por la empresa. \n\n
 Esta constancia se expide a solicitud del interesado para los fines que considere conveniente.`, style: 'body'
       },
-      { text: 'Employees Reference', style: 'signature' },
-      { text: 'Employees Reference', style: 'signature' },
+      { text: `${employeeName}`, style: 'signature' },
+      { text: `${employeePosition}`, style: 'signature' },
     ]
   }
 

@@ -1,11 +1,10 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { CreateBasicReportDto } from './dto/create-basic-report.dto';
+import { BadRequestException, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { UpdateBasicReportDto } from './dto/update-basic-report.dto';
 import { PrismaClient } from '@prisma/client';
 import { PrinterService } from '../printer-pdf/printer.service';
-import { TDocumentInformation } from 'pdfmake/interfaces';
 import { helloReports } from 'src/reports/hello-report';
 import { employeesReference } from 'src/reports';
+import { DateFormatter } from 'src/helpers/date-formatter';
 
 @Injectable()
 export class BasicReportsService extends PrismaClient implements OnModuleInit {
@@ -24,8 +23,27 @@ export class BasicReportsService extends PrismaClient implements OnModuleInit {
     return this.printerService.createPdf(pdfDoc)
   }
 
-  employeesReference() {
-    const pdfDoc = employeesReference()
+  async employmentReference(employeeId: number) {
+    const employee = await this.employees.findFirst({
+      where: {
+        id: employeeId
+      }
+    })
+
+    if (!employee) {
+      throw new NotFoundException(`Employee with id ${employeeId} not found`)
+    }
+
+    const pdfDoc = employeesReference({
+      employeerName: 'German A Alvarez',
+      employeerPotition: 'Gerente',
+      employeeStartWork: DateFormatter.getDDMMYYY(employee.start_date),
+      employeeName: employee.name,
+      employeePosition: employee.position,
+      employeeSchedule: employee.work_schedule,
+      employeeHourPerDay: employee.hours_per_day,
+      company: 'La industria INC'
+    })
     return this.printerService.createPdf(pdfDoc);
   }
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Res } from '@nestjs/common';
 import { BasicReportsService } from './basic-reports.service';
 import { UpdateBasicReportDto } from './dto/update-basic-report.dto';
 import { Response } from 'express';
@@ -17,9 +17,9 @@ export class BasicReportsController {
   }
 
 
-  @Get('/employment-references')
-  employeesReference(@Res() response: Response) {
-    const doc = this.basicReportsService.employeesReference();
+  @Get('/employment-reference/:employeeId')
+  async employmentReference(@Res() response: Response, @Param('employeeId', ParseIntPipe) employeeId: number) {
+    const doc = await this.basicReportsService.employmentReference(employeeId);
     response.setHeader('Content-Type', 'application/pdf');
     doc.pipe(response)
     doc.info.Title = 'Hellos'

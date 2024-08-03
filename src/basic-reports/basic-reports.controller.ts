@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Res } from '@nestjs/common';
 import { BasicReportsService } from './basic-reports.service';
 import { UpdateBasicReportDto } from './dto/update-basic-report.dto';
 import { Response } from 'express';
@@ -26,9 +26,13 @@ export class BasicReportsController {
     doc.end()
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBasicReportDto: UpdateBasicReportDto) {
-    return this.basicReportsService.update(+id, updateBasicReportDto);
+  @Get('/countries')
+  async getCountries(@Res() response: Response) {
+    const doc = await this.basicReportsService.getCountries();
+    response.setHeader('Content-Type', 'application/pdf')
+    doc.pipe(response)
+    doc.info.Title = 'Countries'
+    doc.end()
   }
 
   @Delete(':id')

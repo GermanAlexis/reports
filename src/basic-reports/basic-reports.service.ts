@@ -3,7 +3,7 @@ import { UpdateBasicReportDto } from './dto/update-basic-report.dto';
 import { PrismaClient } from '@prisma/client';
 import { PrinterService } from '../printer-pdf/printer.service';
 import { helloReports } from 'src/reports/hello-report';
-import { employeesReference } from 'src/reports';
+import { employeesReference, getCountriesReport } from 'src/reports';
 import { DateFormatter } from 'src/helpers/date-formatter';
 
 @Injectable()
@@ -47,12 +47,19 @@ export class BasicReportsService extends PrismaClient implements OnModuleInit {
     return this.printerService.createPdf(pdfDoc);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} basicReport`;
-  }
 
-  update(id: number, updateBasicReportDto: UpdateBasicReportDto) {
-    return `This action updates a #${id} basicReport`;
+  async getCountries() {
+
+    const countriesFound = await this.countries.findMany({
+      where: {
+        local_name: { not: null }
+      },
+      orderBy: { name: 'asc' }
+    })
+
+
+    const pdfDoc = getCountriesReport({ title: 'Countries', subtitle: 'List All countries', countries: countriesFound })
+    return this.printerService.createPdf(pdfDoc)
   }
 
   remove(id: number) {

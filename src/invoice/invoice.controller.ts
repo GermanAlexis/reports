@@ -10,7 +10,7 @@ export class InvoiceController {
   @Get('/:orderId')
   async getInvoiceReport(@Res() response: Response, @Param('orderId', ParseIntPipe) orderId: number) {
 
-    const doc = this.invoiceService.getInvoiceReport(orderId);
+    const doc = await this.invoiceService.getInvoiceReport(orderId);
     response.setHeader('Content-Type', 'application/pdf')
     doc.pipe(response)
     doc.info.Title = `invoice ${orderId}`;
